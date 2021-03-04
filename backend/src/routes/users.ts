@@ -1,7 +1,7 @@
 import express from 'express';
 import { QueryOptions } from 'mongoose';
 import { User } from '../models/User';
-import argon2 from 'argon2';
+//import argon2 from 'argon2';
 
 
 const usersRouter = express.Router();
