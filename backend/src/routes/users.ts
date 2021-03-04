@@ -1,5 +1,5 @@
 import express from 'express';
-import { QueryOptions, ReturnsNewDoc} from 'mongoose';
+import { QueryOptions } from 'mongoose';
 import { User } from '../models/User';
 
 

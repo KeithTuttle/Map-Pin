@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { ATLAS_URI } from './constants';
 import { usersRouter } from './routes/users';
+import dotenv from 'dotenv';
 
 const main = async () => {
     //env variables
-    require('dotenv').config();
+    dotenv.config();
 
     // create express server and setup port
     const app = express();
@@ -16,7 +16,7 @@ const main = async () => {
     app.use(cors());
     app.use(express.json());
 
-    const uri = ATLAS_URI;
+    const uri = process.env.ATLAS_URI+''; 
     mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true }
     );
     const connection = mongoose.connection;

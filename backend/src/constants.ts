@@ -1,1 +1,1 @@
-export const ATLAS_URI = "mongodb+srv://mappinDbUser:mappinCOSC484proj!@mappin.j4ge7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+export const __prod__ = process.env.NODE_ENV === "production";

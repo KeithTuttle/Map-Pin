@@ -15,15 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const constants_1 = require("./constants");
 const users_1 = require("./routes/users");
+const dotenv_1 = __importDefault(require("dotenv"));
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    require('dotenv').config();
+    dotenv_1.default.config();
     const app = express_1.default();
     const port = process.env.PORT || 5000;
     app.use(cors_1.default());
     app.use(express_1.default.json());
-    const uri = constants_1.ATLAS_URI;
+    const uri = process.env.ATLAS_URI + '';
     mongoose_1.default.connect(uri, { useNewUrlParser: true, useCreateIndex: true });
     const connection = mongoose_1.default.connection;
     connection.once('open', () => {
