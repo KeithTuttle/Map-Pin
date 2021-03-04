@@ -1,6 +1,5 @@
 import React, { Component, TextareaHTMLAttributes } from 'react';
 import { Link } from 'react-router-dom';
-import { isConstructorDeclaration } from 'typescript';
 import axios from 'axios';
 
 // defines the type of the props, if any. could also pass in {}
