@@ -1,6 +1,7 @@
 import express from 'express';
 import { QueryOptions } from 'mongoose';
 import { User } from '../models/User';
+import argon2 from 'argon2';
 
 
 const usersRouter = express.Router();
@@ -16,9 +17,13 @@ usersRouter.route('/').get((req, res) => {
 // add user
 usersRouter.route('/add').post((req, res) => {
     const username = req.body.username;
-
+    //const password = req.body.password
     const newUser = new User({username});
 
+    //TODO: add password to the user model and hash the password when adding a user
+    //const hashedPassword = argon2.hash({password});
+
+    //TODO: Verify that the username does not exist already, allow for same passwords
     newUser.save()
     .then(() => res.json('User added!'))
     .catch(err => res.status(400).json('ERROR: ' + err));
