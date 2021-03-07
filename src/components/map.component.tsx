@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ReactMapGL, { NavigationControl } from 'react-map-gl';
+import ReactMapGL, { NavigationControl, Marker } from 'react-map-gl';
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN || '';
 const initialState = {
@@ -42,8 +42,12 @@ export default class Map extends React.Component<{}, State> {
         }));
     };
 
+    
     public render() {
         const { viewport } = this.state;
+        const imageClicked = () => {
+            alert("image Clicked!");
+        }
         return (
             <ReactMapGL
                 {...viewport}
@@ -51,6 +55,9 @@ export default class Map extends React.Component<{}, State> {
                 mapboxApiAccessToken={MAPBOX_TOKEN}
                 onViewportChange={(v: Viewport) => this.updateViewport(v)}
             >
+                <Marker latitude={39.4018552} longitude={-76.602388} offsetLeft={-20} offsetTop={-10}>
+                    <img className="imageHover" src="/assets/pin.jpg" alt="Here" style={{width: 35, height: 35}} onClick={() => imageClicked()} />
+                </Marker>
                 <div>
                     <NavigationControl onViewportChange={this.updateViewport} />
                 </div>
