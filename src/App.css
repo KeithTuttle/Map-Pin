@@ -2,3 +2,7 @@
   height: 80% !important;
   width: 90% !important;
 }
+
+.imageHover {
+  cursor: pointer;
+}
