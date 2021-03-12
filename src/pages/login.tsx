@@ -2,7 +2,7 @@ import React from 'react';
 
 import { AriaAttributes, DOMAttributes } from "react";
 
-import Map from '../components/map.component';
+
 
 declare module 'react' {
     interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
@@ -10,7 +10,8 @@ declare module 'react' {
     }
   };
 
-const Home = () => {
+
+  const Login = () => {
     return (
   
         <html lang="en">
@@ -30,26 +31,21 @@ const Home = () => {
                             <div class="topnav_right">
                                 <a href="/contact">Contact Us</a>
                                 <a href="/register">Register</a>
-                                <a href="/login">Login</a>
+                                <a class="active" href="/login">Login</a>
                                 <a href="/about">About</a>
-                                <a class="active" href="/home">Home</a>
+                                <a href="/home">Home</a>
                             </div>
                         </div>
                     </div>
                 </div>
                 {/* Title */}
                 <div class="title">
-                    <h1 class="page_title">Welcome To&nbsp;</h1>
+                    <h1 class="page_title">Log In To Your&nbsp;</h1>
                     <h1 class="main_title">Map-Pin</h1>
-                </div>
-                {/* Map */}
-                <div class="container">
-                    <div class="inner_mapcontainer">
-                        <Map/>
-                    </div>
+                    <h1 class="page_title">&nbsp;Account</h1>
                 </div>
             </body>
         </html>
     );
 };
-export default Home;
+export default Login;

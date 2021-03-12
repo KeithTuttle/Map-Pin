@@ -30,8 +30,9 @@ declare module 'react' {
                             </div>
                             <div class="topnav_right">
                                 <a href="/contact">Contact Us</a>
-                                <a class="active"  href="/about">About</a>
                                 <a href="/register">Register</a>
+                                <a href="/login">Login</a>
+                                <a class="active"  href="/about">About</a>
                                 <a href="/home">Home</a>
                             </div>
                         </div>
@@ -41,6 +42,12 @@ declare module 'react' {
                 <div class="title">
                     <h1 class="page_title">About&nbsp;</h1>
                     <h1 class="main_title">Map-Pin</h1>
+                </div>
+                {/* Intro to App */}
+                <div class="container">
+                    <div class="inner_navcontainer">
+                        
+                    </div>
                 </div>
             </body>
         </html>

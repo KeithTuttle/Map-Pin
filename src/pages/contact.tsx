@@ -32,8 +32,9 @@ declare module 'react' {
                             </div>
                             <div class="topnav_right">
                                 <a class="active"  href="/contact">Contact Us</a>
-                                <a href="/about">About</a>
                                 <a href="/register">Register</a>
+                                <a href="/login">Login</a>
+                                <a href="/about">About</a>
                                 <a href="/home">Home</a>
                             </div>
                         </div>
@@ -41,7 +42,7 @@ declare module 'react' {
                 </div>
                 {/* Title */}
                 <div class="title">
-                    <h1 class="page_title">Contact the&nbsp;</h1>
+                    <h1 class="page_title">Contact The&nbsp;</h1>
                     <h1 class="main_title">Map-Pin</h1>
                     <h1 class="page_title">&nbsp;Team</h1>
                 </div>

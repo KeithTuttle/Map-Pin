@@ -52,7 +52,7 @@ p.main_title {
   padding: 0px;
   margin: 5px 0px 0px 2em;
  
-}
+} 
 
 /* Style the links inside the navigation bar */
 .topnav a {
@@ -88,6 +88,7 @@ p.main_title {
 div.title {
   text-align: center;
   padding-top: 20px;
+  
 }
 
 /* 'Map-Pin' specific */
