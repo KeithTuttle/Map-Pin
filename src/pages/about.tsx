@@ -21,7 +21,7 @@ declare module 'react' {
                
             </head>
             <body>
-                <div class="navcontainer">
+                <div class="container">
                     <div class="inner_navcontainer">
                         {/* Top Navbar */}
                         <div class="topnav">

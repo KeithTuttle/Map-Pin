@@ -20,7 +20,7 @@ const Home = () => {
                
             </head>
             <body>
-                <div class="navcontainer">
+                <div class="container">
                     <div class="inner_navcontainer">
                         {/* Top Navbar */}
                         <div class="topnav">
@@ -41,8 +41,8 @@ const Home = () => {
                     <h1 class="page_title">Welcome to&nbsp;</h1>
                     <h1 class="main_title">Map-Pin</h1>
                 </div>
-                {/* Body */}
-                <div class="mapcontainer">
+                {/* Map */}
+                <div class="container">
                     <div class="inner_mapcontainer">
                         <Map/>
                     </div>

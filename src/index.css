@@ -15,16 +15,22 @@ code {
     monospace;
 }
 
-.navcontainer {
+/* typical container used through the webpage */
+.container {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
 
+/**************************** Navbar ****************************/
 .inner_navcontainer {
   width: 50%;
   margin-left: auto;
   margin-right: auto;
+  z-index: 1;
+  position: fixed;
+  left: 0;
+  right: 0;
 }
 
 /* Add a black background color to the top navigation */
@@ -33,9 +39,9 @@ code {
   overflow: hidden;
   border-radius: 500px;
   align: center;
-  
 }
 
+/* Syles the 'Map-Pin' text within the navbar */
 p.main_title {
   font-family: 'Pacifico', cursive;
   font-size: 20px;
@@ -58,6 +64,7 @@ p.main_title {
   font-size: 17px;
 }
 
+/* Positions the target elements to the right on the navbar */
 .topnav_right {
   float: right;
 }
@@ -77,9 +84,10 @@ p.main_title {
 
 
 
-/* Titles */
+/**************************** Titles ****************************/
 div.title {
   text-align: center;
+  padding-top: 20px;
 }
 
 /* 'Map-Pin' specific */
@@ -99,16 +107,53 @@ h1.page_title {
 }
 
 
-
-
-.mapcontainer {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
+/**************************** Map ****************************/
 .inner_mapcontainer {
-  width: 50%;
+  width: 70%;
+  height: 30em;
+  z-index: -1;
+  position: relative;
+  overflow: hidden;
   margin-left: auto;
   margin-right: auto;
 }
+
+
+/**************************** Contact ****************************/
+textarea {
+  height: 200px;
+  width: 400px;
+}
+
+input[type=text], input[type=email], textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+input[type=submit] {
+  background-color: #ff3333;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.inner_contactcontainer {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  
+} * {box-sizing: border-box;}
