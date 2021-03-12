@@ -35,19 +35,6 @@ const initialState = {
 type State = typeof initialState;
 type Viewport = typeof initialState.viewport;
 
-const imageClicked = () => {
-    alert("image Clicked!");
-}
-
-const markerPrompt = (
-    <Popover id="popover-basic">
-        <Popover.Title as="h3">Add a new Pin!</Popover.Title>
-        <Popover.Content>
-            Here is where you can add a new pin!
-        </Popover.Content>
-    </Popover>
-)
-
 export default class Map extends React.Component<{}, State> {
     public state: State = initialState;
 
@@ -79,29 +66,23 @@ export default class Map extends React.Component<{}, State> {
     public addMarker = (event: MapEvent) => {
         this.setState( prevState => ({
             markers: prevState.markers.concat(
-                <OverlayTrigger trigger="click" placement="bottom" overlay={popover(event.lngLat[1], event.lngLat[0])}>
-                    <Marker latitude={event.lngLat[1]} longitude={event.lngLat[0]} offsetLeft={-20} offsetTop={-10}>
-                        <img className="imageHover" src="/assets/pin.jpg" alt="Here" style={{width: 35, height: 35}} /*onClick={() => 
-                            //alert('latitude: ' + event.lngLat[1] + '\nlongitude: ' + event.lngLat[0])
-                            //this.deleteMarker([event.lngLat[1], event.lngLat[0]])
-                        }*/
-                        />
-                    </Marker>
-                </OverlayTrigger>
+                <Marker latitude={event.lngLat[1]} longitude={event.lngLat[0]} offsetLeft={-20} offsetTop={-10}>
+                    <img className="imageHover" src="/assets/pin.jpg" alt="Here" style={{width: 35, height: 35}} onClick={(event) => 
+                        //alert('latitude: ' + event.lngLat[1] + '\nlongitude: ' + event.lngLat[0])
+                        //this.deleteMarker([event.lngLat[1], event.lngLat[0]])
+                        console.log(event)
+                    }
+                    />
+                </Marker>
                 )
             })
         )
-        this.state.markers.forEach(marker => console.log(marker.props.latitude + ' , ' + marker.props.longitude))
     }
 
     public deleteMarker = (arr: number[]) => {
-        let index: number = -1;
-        this.state.markers.forEach( (marker, i) => {
-            if(marker.props.latitude === arr[0] && marker.props.longitude === arr[1])
-                index = i;
-        })
+        console.log()
         this.setState( prevState => ({
-            markers: prevState.markers.splice(index, 1)
+            markers: prevState.markers.filter(marker => marker.props.children.props.latitude !== arr[0] && marker.props.children.props.longitude !== arr[1])
         }))
     }
     
