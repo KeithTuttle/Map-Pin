@@ -15,7 +15,8 @@ usersRouter.route('/').get((req, res) => {
 });
 usersRouter.route('/add').post((req, res) => {
     const username = req.body.username;
-    const newUser = new User_1.User({ username });
+    const password = req.body.password;
+    const newUser = new User_1.User({ username, password });
     newUser.save()
         .then(() => res.json('User added!'))
         .catch(err => res.status(400).json('ERROR: ' + err));
@@ -32,7 +33,7 @@ usersRouter.route('/username/:username').get((req, res) => {
 });
 usersRouter.route('/:id').delete((req, res) => {
     User_1.User.findByIdAndDelete(req.params.id)
-        .then(() => res.json('Exercise deleted.'))
+        .then(() => res.json('User deleted.'))
         .catch(err => res.status(400).json('ERROR: ' + err));
 });
 usersRouter.route('/update/:id').post((req, res) => {

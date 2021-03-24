@@ -9,19 +9,19 @@ const usersRouter = express.Router();
 // get all users
 usersRouter.route('/').get((req, res) => {
     User.find()
-    .then(users => res.json(users))
-    .catch(err => res.status(400).json('ERROR: ' + err));
+        .then(users => res.json(users))
+        .catch(err => res.status(400).json('ERROR: ' + err));
 });
 
 
 // add user
 usersRouter.route('/add').post((req, res) => {
     const username = req.body.username;
-    //const password = req.body.password
-    const newUser = new User({username});
+    const password = req.body.password;
+    const newUser = new User({username, password});
 
-    //TODO: add password to the user model and hash the password when adding a user
-    //const hashedPassword = argon2.hash({password});
+    //TODO: hash the password when adding a user
+    
 
     //TODO: Verify that the username does not exist already, allow for same passwords
     newUser.save()
@@ -46,7 +46,7 @@ usersRouter.route('/username/:username').get((req, res) => {
 // delete user by id
 usersRouter.route('/:id').delete((req, res) => {
     User.findByIdAndDelete(req.params.id)
-    .then(() => res.json('Exercise deleted.'))
+    .then(() => res.json('User deleted.'))
     .catch(err => res.status(400).json('ERROR: ' + err));
 });
 
