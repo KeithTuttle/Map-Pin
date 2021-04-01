@@ -59,8 +59,6 @@ export default class Map extends React.Component<{}, State> {
                 })
                 this.convertMarkers();
             })
-        
-
     }
 
     public componentWillUnmount() {
