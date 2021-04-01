@@ -1,6 +1,6 @@
 import React, { Component, TextareaHTMLAttributes } from 'react';
-import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 // defines the type of the props, if any. could also pass in {}
 interface IProps {
@@ -8,13 +8,14 @@ interface IProps {
 }
 
 // defines the type of the state
-interface RegisterState {
+interface LoginState {
     username: string;
     password: string;
+    users: { _id: string, username: string, password: string } [];
     redirect: boolean;
 }
 
-class RegisterUser extends React.Component<IProps, RegisterState> {
+class LoginUser extends React.Component<IProps, LoginState> {
     constructor(props: IProps) {
         super(props);
 
@@ -25,8 +26,19 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
         this.state = {
             username: '',
             password: '',
-            redirect: false,
+            users: [],
+            redirect: false
         }
+    }
+
+    componentDidMount() {
+        axios.get('http://localhost:5000/users/')
+            .then(response => {
+                this.setState({
+                    users: response.data
+                })
+            })
+            .catch((err) => console.log('Error' + err))
     }
 
     onChangeUsername(event: React.FormEvent<HTMLInputElement>) {
@@ -46,19 +58,27 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
     onSubmit(event: React.FormEvent){
         event.preventDefault();
 
-        const user = { 
-            username: this.state.username, 
-            password: this.state.password 
-        }
+        const dbUser = this.state.users.filter(user => user.username === this.state.username)[0];
 
-        axios.post('http://localhost:5000/users/add', user)
-            .then(result => {
-                localStorage.setItem('user', result.data._id);
-                this.setState({
-                    redirect: true
-                })
+        if (dbUser === undefined) {
+            alert('Sorry that username does not exist, please try again or register a new account')
+            this.setState({
+                username: '',
+                password: ''
             })
-            .catch(err => console.log(err));
+        } else if (dbUser.password !== this.state.password) {
+            alert('Sorry that password is incorrect, please try again')
+            this.setState({
+                password: ''
+            })
+        } 
+        else {
+            console.log('Signed in!');
+            localStorage.setItem('user', dbUser._id);
+            this.setState({
+                redirect: true
+            })
+        }
 
         
     }
@@ -67,7 +87,7 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
         return(
             <div className="container">
                 { this.state.redirect ? (<Redirect push to='/'/>) : null }
-                <h3>Create Account</h3>
+                <h3>Sign in to Your Account</h3>
                 <form onSubmit={this.onSubmit}>
                 <div className="form-group"> 
                     <label>Username: </label>
@@ -88,7 +108,7 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
                         />
                 </div>
                 <div className="form-group">
-                    <input type="submit" value="Register" className="btn btn-primary" />
+                    <input type="submit" value="Login" className="btn btn-primary" />
                 </div>
                 </form>
             </div>
@@ -96,4 +116,4 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
     }
 }
 
-export default RegisterUser;
+export default LoginUser;

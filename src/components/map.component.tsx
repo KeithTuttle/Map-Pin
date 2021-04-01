@@ -1,8 +1,8 @@
-import { render } from '@testing-library/react';
+import axios from 'axios';
 import * as React from 'react';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import ReactMapGL, { NavigationControl, Marker, MapEvent } from 'react-map-gl';
-import { MouseEvent } from 'react-mapbox-gl/lib/geojson-layer';
+import { Redirect } from 'react-router-dom';
 
 const popover = (latitude: number, longitude: number) => (
     <Popover id="popover-basic">
@@ -11,6 +11,8 @@ const popover = (latitude: number, longitude: number) => (
         Latitude: {latitude.toFixed(2)}
         <br />
         Longitude: {longitude.toFixed(2)}
+        <br />
+        Current User: {localStorage.user}
       </Popover.Content>
     </Popover>
 );
@@ -24,29 +26,24 @@ const initialState = {
         width: 400,
         zoom: 14,
     },
+    pins: [
+        {
+            'name': 'intitial',
+            'latitude': 39.406,
+            'longitude': -76.610,
+            'description': 'intitial'
+        }
+    ],
     markers: [
         <OverlayTrigger rootClose trigger="click" placement="bottom" overlay={popover(39.406, -76.610)}>
             <Marker latitude={39.406} longitude={-76.610} offsetLeft={-20} offsetTop={-10}>
                 <img className="imageHover" src="/assets/pin.jpg" alt="Here" style={{width: 35, height: 35}}/>
             </Marker>
         </OverlayTrigger>
-    ],
+    ]
 };
 type State = typeof initialState;
 type Viewport = typeof initialState.viewport;
-
-const imageClicked = () => {
-    alert("image Clicked!");
-}
-
-const markerPrompt = (
-    <Popover id="popover-basic">
-        <Popover.Title as="h3">Add a new Pin!</Popover.Title>
-        <Popover.Content>
-            Here is where you can add a new pin!
-        </Popover.Content>
-    </Popover>
-)
 
 export default class Map extends React.Component<{}, State> {
     public state: State = initialState;
@@ -54,6 +51,16 @@ export default class Map extends React.Component<{}, State> {
     public componentDidMount() {
         window.addEventListener('resize', this.resize);
         this.resize();
+        axios.get('http://localhost:5000/users/' + localStorage.user)
+            .then(response => {
+                console.log(response.data)
+                this.setState({
+                    pins: response.data.pins
+                })
+                this.convertMarkers();
+            })
+        
+
     }
 
     public componentWillUnmount() {
@@ -76,50 +83,65 @@ export default class Map extends React.Component<{}, State> {
         }));
     };
 
-    public addMarker = (event: MapEvent) => {
-        this.setState( prevState => ({
-            markers: prevState.markers.concat(
-                <OverlayTrigger trigger="click" placement="bottom" overlay={popover(event.lngLat[1], event.lngLat[0])}>
-                    <Marker latitude={event.lngLat[1]} longitude={event.lngLat[0]} offsetLeft={-20} offsetTop={-10}>
-                        <img className="imageHover" src="/assets/pin.jpg" alt="Here" style={{width: 35, height: 35}} /*onClick={() => 
-                            //alert('latitude: ' + event.lngLat[1] + '\nlongitude: ' + event.lngLat[0])
-                            //this.deleteMarker([event.lngLat[1], event.lngLat[0]])
-                        }*/
-                        />
+    public convertMarkers = () => {
+        const markers = this.state.markers.slice();
+        this.state.pins.forEach(
+            (pin: {name: string, latitude: number, longitude: number, description: string}) => markers.push(
+                <OverlayTrigger rootClose trigger="click" placement="bottom" overlay={popover(pin.latitude, pin.longitude)}>
+                    <Marker latitude={pin.latitude} longitude={pin.longitude} offsetLeft={-20} offsetTop={-10}>
+                        <img className="imageHover" src="/assets/pin.jpg" alt="Here" style={{width: 35, height: 35}}/>
                     </Marker>
                 </OverlayTrigger>
-                )
-            })
-        )
-        this.state.markers.forEach(marker => console.log(marker.props.latitude + ' , ' + marker.props.longitude))
+            ))
+        this.setState({
+            markers: markers
+        })
+    }
+
+    public addPin = (event: MapEvent) => {
+        const pins = this.state.pins.slice();
+        pins.push({
+            'name': 'temporary',
+            'latitude': event.lngLat[1],
+            'longitude': event.lngLat[0],
+            'description': 'temporary'
+        })
+        const update = {
+            pins: pins
+        }
+        axios.post('http://localhost:5000/users/update/' + localStorage.user, update)
+        this.setState(update)
+        this.convertMarkers();
     }
 
     public deleteMarker = (arr: number[]) => {
-        let index: number = -1;
-        this.state.markers.forEach( (marker, i) => {
-            if(marker.props.latitude === arr[0] && marker.props.longitude === arr[1])
-                index = i;
-        })
         this.setState( prevState => ({
-            markers: prevState.markers.splice(index, 1)
+            markers: prevState.markers.filter(marker => marker.props.children.props.latitude !== arr[0] && marker.props.children.props.longitude !== arr[1])
         }))
     }
     
     public render() {
         const { viewport } = this.state;
-        return (
-            <ReactMapGL
-                {...viewport}
-                className="map-size"
-                mapboxApiAccessToken={MAPBOX_TOKEN}
-                onViewportChange={(v: Viewport) => this.updateViewport(v)}
-                onClick={(event: MapEvent) => this.addMarker(event)}
-            >
-                {this.state.markers}
-                <div>
-                    <NavigationControl onViewportChange={this.updateViewport} />
-                </div>
-            </ReactMapGL>
-        );
+        if (!localStorage.user) {
+            return (
+                <Redirect push to='/register'/>
+            );
+        }
+        else {
+            return (
+                <ReactMapGL
+                    {...viewport}
+                    className="map-size"
+                    mapboxApiAccessToken={MAPBOX_TOKEN}
+                    onViewportChange={(v: Viewport) => this.updateViewport(v)}
+                    onClick={(event: MapEvent) => this.addPin(event)}
+                >
+                    {this.state.markers}
+                    <div>
+                        <NavigationControl onViewportChange={this.updateViewport} />
+                    </div>
+                </ReactMapGL>
+            );
+        }
     }
 }
