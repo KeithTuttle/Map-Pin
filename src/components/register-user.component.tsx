@@ -58,19 +58,19 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
                     redirect: true
                 })
             })
-        .catch(err => console.log(err));  
+        .catch(err => console.log(err));
     }
 
     render(){
         return(
-            <div className="container">
+            <div className="container" style={{marginLeft: 'auto', marginRight: 'auto', width: '30%'}}>
                 { this.state.redirect ? (<Redirect push to='/'/>) : null }
                 <h3>Create Account</h3>
                 <form onSubmit={this.onSubmit}>
                 <div className="form-group"> 
                     <label>Username: </label>
                     <input  type="text"
-                        style={{width: '50%'}}
+                        style={{width: '90%'}}
                         required
                         className="form-control"
                         value={this.state.username}
@@ -78,7 +78,7 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
                         />
                     <label>Password: </label>
                     <input  type="text"
-                        style={{width: '50%'}}
+                        style={{width: '90%'}}
                         required
                         className="form-control"
                         value={this.state.password}

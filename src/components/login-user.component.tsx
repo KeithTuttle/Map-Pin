@@ -95,14 +95,14 @@ class LoginUser extends React.Component<IProps, LoginState> {
 
     render(){
         return(
-            <div className="container">
+            <div className="container" style={{marginLeft: 'auto', marginRight: 'auto', width: '30%'}}>
                 { this.state.redirect ? (<Redirect push to='/'/>) : null }
                 <h3>Sign in to Your Account</h3>
                 <form onSubmit={this.onSubmit}>
                 <div className="form-group"> 
                     <label>Username: </label>
                     <input  type="text"
-                        style={{width: '50%'}}
+                        style={{width: '90%'}}
                         required
                         className="form-control"
                         value={this.state.username}
@@ -115,7 +115,7 @@ class LoginUser extends React.Component<IProps, LoginState> {
                     }
                     <label>Password: </label>
                     <input  type="text"
-                        style={{width: '50%'}}
+                        style={{width: '90%'}}
                         required
                         className="form-control"
                         value={this.state.password}
