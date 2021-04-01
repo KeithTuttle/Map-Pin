@@ -1,13 +1,15 @@
 import express from 'express';
 import { QueryOptions } from 'mongoose';
-import { User } from '../models/User';
-//import argon2 from 'argon2';
+import { User, IUser } from '../models/User';
+import argon2 from 'argon2';
+import { UserWithErrorMessage } from '../models/UserWithErrorMesage'
 
 
 const usersRouter = express.Router();
 
 // get all users
 usersRouter.route('/').get((req, res) => {
+    console.log("getting users 1");
     User.find()
         .then(users => res.json(users))
         .catch(err => res.status(400).json('ERROR: ' + err));
@@ -15,13 +17,11 @@ usersRouter.route('/').get((req, res) => {
 
 
 // add user
-usersRouter.route('/add').post((req, res) => {
+usersRouter.route('/add').post(async(req, res) => {
+    console.log("adding user");
     const username = req.body.username;
-    const password = req.body.password;
+    const password = await argon2.hash(req.body.password);
     const newUser = new User({username, password});
-
-    //TODO: hash the password when adding a user
-    
 
     //TODO: Verify that the username does not exist already, allow for same passwords
     newUser.save()
@@ -38,9 +38,41 @@ usersRouter.route('/:id').get((req, res) => {
 
 // get user by username
 usersRouter.route('/username/:username').get((req, res) => {
+    console.log("getting users");
     User.findOne({username: req.params.username})
     .then(user => res.json(user))
     .catch(err => res.status(400).json('ERROR: ' + err));
+});
+
+// get user by username and password
+usersRouter.route('/login').post(async(req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    console.log(username);
+
+    User.findOne({username: username}, async function(err: Error, user: IUser){
+        if(err) {
+            console.log(err);
+            var message = "An error occured";
+            var response = new UserWithErrorMessage(null, message);
+            return res.json(response);
+        }
+        if(!user) {
+            console.log("user not found");
+            var message = "Username does not exist";
+            var response = new UserWithErrorMessage(null, message);
+            return res.json(response);
+        }
+        const valid = await argon2.verify(user.password, password);
+        if(!valid){
+            console.log("pw not found");
+            var message = "Password is incorrect";
+            var response = new UserWithErrorMessage(null, message);
+            return res.json(response);
+        }
+        var response = new UserWithErrorMessage(user, "");
+        return res.json(response);
+    })
 });
 
 // delete user by id
@@ -70,6 +102,7 @@ usersRouter.route('/update/:id').post((req, res) => {
 
 // GET request
 usersRouter.route('/update/username/:username').get((req, res) => {
+    console.log("getting users");
     User.updateOne({username: req.params.username}, {$set: {"username": req.body.username}}, { upsert: true, new: true }, (err) => {
         if(err){
             res.send(err);

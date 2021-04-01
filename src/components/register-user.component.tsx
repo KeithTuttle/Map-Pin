@@ -58,9 +58,7 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
                     redirect: true
                 })
             })
-            .catch(err => console.log(err));
-
-        
+        .catch(err => console.log(err));  
     }
 
     render(){

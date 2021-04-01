@@ -1,6 +1,7 @@
 import React, { Component, TextareaHTMLAttributes } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import { UserWithErrorMessage } from '../viewModels/UserWithErrorMessage';
 
 // defines the type of the props, if any. could also pass in {}
 interface IProps {
@@ -13,6 +14,8 @@ interface LoginState {
     password: string;
     users: { _id: string, username: string, password: string } [];
     redirect: boolean;
+    wrongUsername: string;
+    wrongPassword: string;
 }
 
 class LoginUser extends React.Component<IProps, LoginState> {
@@ -27,18 +30,20 @@ class LoginUser extends React.Component<IProps, LoginState> {
             username: '',
             password: '',
             users: [],
-            redirect: false
+            redirect: false,
+            wrongUsername: '',
+            wrongPassword: ''
         }
     }
 
     componentDidMount() {
-        axios.get('http://localhost:5000/users/')
-            .then(response => {
-                this.setState({
-                    users: response.data
-                })
-            })
-            .catch((err) => console.log('Error' + err))
+        // axios.get('http://localhost:5000/users/')
+        //     .then(response => {
+        //         this.setState({
+        //             users: response.data
+        //         })
+        //     })
+        //     .catch((err) => console.log('Error' + err))
     }
 
     onChangeUsername(event: React.FormEvent<HTMLInputElement>) {
@@ -57,30 +62,35 @@ class LoginUser extends React.Component<IProps, LoginState> {
 
     onSubmit(event: React.FormEvent){
         event.preventDefault();
+        this.setState({wrongPassword: "", wrongUsername: ""});
 
-        const dbUser = this.state.users.filter(user => user.username === this.state.username)[0];
-
-        if (dbUser === undefined) {
-            alert('Sorry that username does not exist, please try again or register a new account')
-            this.setState({
-                username: '',
-                password: ''
-            })
-        } else if (dbUser.password !== this.state.password) {
-            alert('Sorry that password is incorrect, please try again')
-            this.setState({
-                password: ''
-            })
-        } 
-        else {
-            console.log('Signed in!');
-            localStorage.setItem('user', dbUser._id);
-            this.setState({
-                redirect: true
-            })
+        const user = { 
+            username: this.state.username, 
+            password: this.state.password 
         }
 
-        
+        axios.post<UserWithErrorMessage>('http://localhost:5000/users/login', user)
+            .then(result => {
+                console.log(result);
+                if(result.data.error !== ""){
+                    if(result.data.error.includes("Username")){
+                        this.setState({wrongUsername: result.data.error});
+                    }
+                    if(result.data.error.includes("Password")){
+                        this.setState({wrongPassword: result.data.error});
+                    }
+                }
+                else if(result.data.user === null){
+                    alert("unexpected error occured");
+                }
+                else{
+                    localStorage.setItem('user', result.data.user?.username);
+                    this.setState({
+                        redirect: true
+                    })
+                }
+            })
+        .catch(err => console.log(err));
     }
 
     render(){
@@ -98,6 +108,11 @@ class LoginUser extends React.Component<IProps, LoginState> {
                         value={this.state.username}
                         onChange={this.onChangeUsername}
                         />
+                    {this.state.wrongUsername.length > 0 &&
+                        <div style={{color: 'red', fontWeight: 'bold', paddingBottom: '10px'}}>
+                            {this.state.wrongUsername}
+                        </div>
+                    }
                     <label>Password: </label>
                     <input  type="text"
                         style={{width: '50%'}}
@@ -106,6 +121,11 @@ class LoginUser extends React.Component<IProps, LoginState> {
                         value={this.state.password}
                         onChange={this.onChangePassword}
                         />
+                    {this.state.wrongPassword.length > 0 &&
+                        <div style={{color: 'red', fontWeight: 'bold', paddingBottom: '10px'}}>
+                            {this.state.wrongPassword}
+                        </div>
+                    }
                 </div>
                 <div className="form-group">
                     <input type="submit" value="Login" className="btn btn-primary" />
