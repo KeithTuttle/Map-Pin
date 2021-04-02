@@ -23,10 +23,27 @@ usersRouter.route('/add').post(async(req, res) => {
     const password = await argon2.hash(req.body.password);
     const newUser = new User({username, password});
 
-    //TODO: Verify that the username does not exist already, allow for same passwords
-    newUser.save()
-    .then(() => res.json('User added!'))
-    .catch(err => res.status(400).json('ERROR: ' + err));
+    User.count({username: username}, async (err, count) => { 
+        if(err){
+            console.log("ERROR: " + err);
+            return res.json(new UserWithErrorMessage(null, "something went wrong"));
+        }
+        if(count>0){
+            console.log("user exists!");
+            return res.json(new UserWithErrorMessage(null, "That username is taken"));
+        }
+        console.log("saving user");
+        newUser.save()
+        .then(() => {
+            console.log("return saved user");
+            newUser.password = "";
+        })
+        .catch(err => {
+            console.log('ERROR: ' + err);
+            return res.json(new UserWithErrorMessage(null, "something went wrong"));
+        });
+        return res.json(new UserWithErrorMessage(newUser, ""));
+    }); 
 });
 
 // get user by id
