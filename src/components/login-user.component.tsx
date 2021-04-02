@@ -46,6 +46,13 @@ class LoginUser extends React.Component<IProps, LoginState> {
         //     .catch((err) => console.log('Error' + err))
     }
 
+    handleRedirect() {
+        this.setState({
+            redirect: true
+        })
+        window.location.reload();
+    }
+
     onChangeUsername(event: React.FormEvent<HTMLInputElement>) {
         const target = event.target as HTMLInputElement;
         this.setState({
@@ -85,9 +92,7 @@ class LoginUser extends React.Component<IProps, LoginState> {
                 }
                 else{
                     localStorage.setItem('user', result.data.user?.username);
-                    this.setState({
-                        redirect: true
-                    })
+                    this.handleRedirect();
                 }
             })
         .catch(err => console.log(err));
@@ -96,7 +101,7 @@ class LoginUser extends React.Component<IProps, LoginState> {
     render(){
         return(
             <div className="container" style={{marginLeft: 'auto', marginRight: 'auto', width: '30%'}}>
-                { this.state.redirect ? (<Redirect push to='/'/>) : null }
+                { this.state.redirect ? (<Redirect to={{pathname: "/", state: { username: this.state.username }}}/>) : null }
                 <h3>Sign in to Your Account</h3>
                 <form onSubmit={this.onSubmit}>
                 <div className="form-group"> 
