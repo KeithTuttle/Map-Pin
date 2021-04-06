@@ -142,7 +142,9 @@ usersRouter.post("/contact", (req, res) => {
         `smtps://mappinteam%40gmail.com:MappinProject@smtp.gmail.com` 
     ); 
 
-    const name = req.body.name;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const name = firstName +" "+lastName;
     const email = req.body.email;
     const message = req.body.message; 
    
@@ -150,7 +152,7 @@ usersRouter.post("/contact", (req, res) => {
         from : email, 
         to : 'mappinteam@gmail.com', 
         subject : 'Contact Us Form', 
-        text: message 
+        text: "name: " + name + "\nemail: "+ email + "\n\n"+ message
     }; 
    
     transporter.sendMail( mailOptions, (error, info) => { 

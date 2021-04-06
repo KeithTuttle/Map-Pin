@@ -127,14 +127,16 @@ usersRouter.route('/update/username/:username').get((req, res) => {
 usersRouter.post("/contact", (req, res) => {
     console.log("sending mail");
     var transporter = nodemailer_1.default.createTransport(`smtps://mappinteam%40gmail.com:MappinProject@smtp.gmail.com`);
-    const name = req.body.name;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const name = firstName + " " + lastName;
     const email = req.body.email;
     const message = req.body.message;
     var mailOptions = {
         from: email,
         to: 'mappinteam@gmail.com',
         subject: 'Contact Us Form',
-        text: message
+        text: "name: " + name + "\nemail: " + email + "\n\n" + message
     };
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
