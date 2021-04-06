@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { UserWithErrorMessage } from '../viewModels/UserWithErrorMessage';
 import * as UserActions from '../store/actions/userActions';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 // defines the type of the props, if any. could also pass in {}
 interface IProps {
@@ -22,6 +24,7 @@ interface LoginState {
 class LoginUser extends React.Component<IProps, LoginState> {
     constructor(props: IProps) {
         super(props);
+        
 
         this.onChangeUsername = this.onChangeUsername.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
@@ -79,7 +82,8 @@ class LoginUser extends React.Component<IProps, LoginState> {
                     }
                 }
                 else if(result.data.user === null){
-                    alert("unexpected error occured");
+                    const MySwal = withReactContent(Swal);
+                    return MySwal.fire(<p>Login Failed</p>,<span>User was not found</span>, "error");
                 }
                 else{
                     UserActions.setUser(result.data.user);

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Pin = exports.ViewUser = exports.User = exports.UserWithErrorMessage = void 0;
+exports.Pin = exports.User = exports.UserWithErrorMessage = void 0;
 class UserWithErrorMessage {
     constructor(user, error) {
         this.user = null;
@@ -17,9 +17,6 @@ class User {
     }
 }
 exports.User = User;
-class ViewUser extends User {
-}
-exports.ViewUser = ViewUser;
 class Pin {
     constructor() {
         this.name = "";

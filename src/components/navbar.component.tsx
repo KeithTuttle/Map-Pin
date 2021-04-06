@@ -55,6 +55,9 @@ export default class NavBar extends React.Component<IProps, NavState> {
                 {this.state.username == '' &&
                     <ul className="navbar-nav ml-auto">
                         <li className="navbar-item">
+                            <NavLink style={{color: 'white'}} to="/contact" className="nav-link">Contact Us </NavLink>
+                        </li>
+                        <li className="navbar-item">
                             <NavLink style={{color: 'white'}} to="/register" className="nav-link">Register</NavLink>
                         </li>
                         <li className="navbar-item">
@@ -65,7 +68,10 @@ export default class NavBar extends React.Component<IProps, NavState> {
                 {this.state.username != '' &&
                     <ul className="navbar-nav ml-auto">
                         <li className="navbar-item">
-                            <NavLink style={{color: 'white'}} to="/login" className="nav-link" onClick={this.clearUsername}>Logout {this.state.username}</NavLink>
+                            <NavLink style={{color: 'white'}} to="/contact" className="nav-link">Contact Us </NavLink>
+                        </li>
+                        <li className="navbar-item">
+                            <NavLink style={{color: 'white'}} to="/login" className="nav-link" onClick={this.clearUsername}> Logout {this.state.username}</NavLink>
                         </li>
                     </ul>
                 }

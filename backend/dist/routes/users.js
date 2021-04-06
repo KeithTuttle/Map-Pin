@@ -17,6 +17,7 @@ const express_1 = __importDefault(require("express"));
 const User_1 = require("../models/User");
 const argon2_1 = __importDefault(require("argon2"));
 const UserWithErrorMesage_1 = require("../models/UserWithErrorMesage");
+const nodemailer_1 = __importDefault(require("nodemailer"));
 const usersRouter = express_1.default.Router();
 exports.usersRouter = usersRouter;
 usersRouter.route('/').get((req, res) => {
@@ -121,6 +122,27 @@ usersRouter.route('/update/username/:username').get((req, res) => {
         else {
             res.send("Updated User");
         }
+    });
+});
+usersRouter.post("/contact", (req, res) => {
+    console.log("sending mail");
+    var transporter = nodemailer_1.default.createTransport(`smtps://mappinteam%40gmail.com:MappinProject@smtp.gmail.com`);
+    const name = req.body.name;
+    const email = req.body.email;
+    const message = req.body.message;
+    var mailOptions = {
+        from: email,
+        to: 'mappinteam@gmail.com',
+        subject: 'Contact Us Form',
+        text: message
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(`error: ${error}`);
+            res.json({ status: "failed" });
+        }
+        console.log(`Message Sent ${info.response}`);
+        res.json({ status: "sent" });
     });
 });
 //# sourceMappingURL=users.js.map

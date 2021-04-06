@@ -121,7 +121,7 @@ export default class Map extends React.Component<{}, State> {
     public render() {
         const { viewport } = this.state;
          return (
-                <ReactMapGL
+             <ReactMapGL
                     {...viewport}
                     className="map-size"
                     mapboxApiAccessToken={MAPBOX_TOKEN}

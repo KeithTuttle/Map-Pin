@@ -52,9 +52,9 @@ export default class Home extends React.Component<IProps, HomeState> {
         }
         else {
             return (
-                <div id="mapbox">
-                    <EditPin></EditPin>
-                    <Map></Map>
+                <div id="mapbox" className="text-center">
+                        <EditPin></EditPin>
+                        <Map></Map>
                 </div>
             );
         }

@@ -2,6 +2,8 @@ import React, { Component, TextareaHTMLAttributes } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { UserWithErrorMessage } from '../viewModels/UserWithErrorMessage';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 // defines the type of the props, if any. could also pass in {}
 interface IProps {
@@ -58,7 +60,7 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
         this.setState({
             usernameError: ''
         })
-
+        const MySwal = withReactContent(Swal);
         const user = { 
             username: this.state.username, 
             password: this.state.password 
@@ -72,11 +74,11 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
                         this.setState({usernameError: result.data.error});
                     }
                     else {
-                        alert(result.data.error);
+                        return MySwal.fire(<p>Login Failed</p>,<span>{result.data.error}</span>, "error");
                     }
                 }
                 else if(result.data.user === null){
-                    alert("unexpected error occured");
+                    return MySwal.fire(<p>Registration Failed</p>,<span>unexpected error occured</span>, "error");
                 }
                 else{
                     localStorage.setItem('user', result.data.user.username);

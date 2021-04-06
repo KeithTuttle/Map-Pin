@@ -3,6 +3,8 @@ import { QueryOptions } from 'mongoose';
 import { User, IUser } from '../models/User';
 import argon2 from 'argon2';
 import { UserWithErrorMessage } from '../models/UserWithErrorMesage'
+import nodemailer from "nodemailer";
+import Mail from 'nodemailer/lib/mailer';
 
 
 const usersRouter = express.Router();
@@ -132,5 +134,33 @@ usersRouter.route('/update/username/:username').get((req, res) => {
     });
 });
 
+
+
+usersRouter.post("/contact", (req, res) => {
+    console.log("sending mail");
+    var transporter = nodemailer.createTransport( 
+        `smtps://mappinteam%40gmail.com:MappinProject@smtp.gmail.com` 
+    ); 
+
+    const name = req.body.name;
+    const email = req.body.email;
+    const message = req.body.message; 
+   
+    var mailOptions = { 
+        from : email, 
+        to : 'mappinteam@gmail.com', 
+        subject : 'Contact Us Form', 
+        text: message 
+    }; 
+   
+    transporter.sendMail( mailOptions, (error, info) => { 
+        if (error) { 
+          console.log(`error: ${error}`); 
+          res.json({ status: "failed" });
+        } 
+        console.log(`Message Sent ${info.response}`); 
+        res.json({ status: "sent" });
+    });
+});
 
 export {usersRouter};
