@@ -1,6 +1,9 @@
 import React, { Component, TextareaHTMLAttributes } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+import { UserWithErrorMessage } from '../viewModels/UserWithErrorMessage';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 // defines the type of the props, if any. could also pass in {}
 interface IProps {
@@ -12,6 +15,7 @@ interface RegisterState {
     username: string;
     password: string;
     redirect: boolean;
+    usernameError: string;
 }
 
 class RegisterUser extends React.Component<IProps, RegisterState> {
@@ -26,7 +30,15 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
             username: '',
             password: '',
             redirect: false,
+            usernameError: ''
         }
+    }
+
+    handleRedirect() {
+        this.setState({
+            redirect: true
+        })
+        window.location.reload();
     }
 
     onChangeUsername(event: React.FormEvent<HTMLInputElement>) {
@@ -45,20 +57,39 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
 
     onSubmit(event: React.FormEvent){
         event.preventDefault();
-
+        this.setState({
+            usernameError: ''
+        })
+        const MySwal = withReactContent(Swal);
         const user = { 
             username: this.state.username, 
             password: this.state.password 
         }
-
-        axios.post('http://localhost:5000/users/add', user)
+        try{
+            axios.post<UserWithErrorMessage>('http://localhost:5000/users/add', user)
             .then(result => {
-                localStorage.setItem('user', result.data._id);
-                this.setState({
-                    redirect: true
-                })
+                console.log(result.data)
+                if(result.data.error !== ""){
+                    if(result.data.error.includes("username is taken")){
+                        this.setState({usernameError: result.data.error});
+                    }
+                    else {
+                        return MySwal.fire(<p>Login Failed</p>,<span>{result.data.error}</span>, "error");
+                    }
+                }
+                else if(result.data.user === null){
+                    return MySwal.fire(<p>Registration Failed</p>,<span>unexpected error occured</span>, "error");
+                }
+                else{
+                    localStorage.setItem('user', result.data.user.username);
+                    this.handleRedirect();
+                }
             })
-        .catch(err => console.log(err));
+            .catch(err => console.log(err));
+        }
+        catch (err){
+            console.log(err)
+        }
     }
 
     render(){
@@ -76,6 +107,11 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
                         value={this.state.username}
                         onChange={this.onChangeUsername}
                         />
+                        {this.state.usernameError.length > 0 &&
+                        <div style={{color: 'red', fontWeight: 'bold', paddingBottom: '10px'}}>
+                            {this.state.usernameError}
+                        </div>
+                    }
                     <label>Password: </label>
                     <input  type="text"
                         style={{width: '90%'}}

@@ -2,6 +2,9 @@ import React, { Component, TextareaHTMLAttributes } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { UserWithErrorMessage } from '../viewModels/UserWithErrorMessage';
+import * as UserActions from '../store/actions/userActions';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 // defines the type of the props, if any. could also pass in {}
 interface IProps {
@@ -21,6 +24,7 @@ interface LoginState {
 class LoginUser extends React.Component<IProps, LoginState> {
     constructor(props: IProps) {
         super(props);
+        
 
         this.onChangeUsername = this.onChangeUsername.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
@@ -36,14 +40,11 @@ class LoginUser extends React.Component<IProps, LoginState> {
         }
     }
 
-    componentDidMount() {
-        // axios.get('http://localhost:5000/users/')
-        //     .then(response => {
-        //         this.setState({
-        //             users: response.data
-        //         })
-        //     })
-        //     .catch((err) => console.log('Error' + err))
+    handleRedirect() {
+        this.setState({
+            redirect: true
+        })
+        window.location.reload();
     }
 
     onChangeUsername(event: React.FormEvent<HTMLInputElement>) {
@@ -81,13 +82,16 @@ class LoginUser extends React.Component<IProps, LoginState> {
                     }
                 }
                 else if(result.data.user === null){
-                    alert("unexpected error occured");
+                    const MySwal = withReactContent(Swal);
+                    return MySwal.fire(<p>Login Failed</p>,<span>User was not found</span>, "error");
                 }
                 else{
+                    UserActions.setUser(result.data.user);
+                    //TODO: Remove local storage so everything calls the store
                     localStorage.setItem('user', result.data.user?.username);
                     this.setState({
                         redirect: true
-                    })
+                    });
                 }
             })
         .catch(err => console.log(err));
@@ -96,7 +100,7 @@ class LoginUser extends React.Component<IProps, LoginState> {
     render(){
         return(
             <div className="container" style={{marginLeft: 'auto', marginRight: 'auto', width: '30%'}}>
-                { this.state.redirect ? (<Redirect push to='/'/>) : null }
+                { this.state.redirect ? (<Redirect to={{pathname: "/" }}/>) : null }
                 <h3>Sign in to Your Account</h3>
                 <form onSubmit={this.onSubmit}>
                 <div className="form-group"> 

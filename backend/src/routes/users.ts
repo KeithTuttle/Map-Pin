@@ -3,6 +3,8 @@ import { QueryOptions } from 'mongoose';
 import { User, IUser } from '../models/User';
 import argon2 from 'argon2';
 import { UserWithErrorMessage } from '../models/UserWithErrorMesage'
+import nodemailer from "nodemailer";
+import Mail from 'nodemailer/lib/mailer';
 
 
 const usersRouter = express.Router();
@@ -23,10 +25,27 @@ usersRouter.route('/add').post(async(req, res) => {
     const password = await argon2.hash(req.body.password);
     const newUser = new User({username, password});
 
-    //TODO: Verify that the username does not exist already, allow for same passwords
-    newUser.save()
-    .then(() => res.json('User added!'))
-    .catch(err => res.status(400).json('ERROR: ' + err));
+    User.count({username: username}, async (err, count) => { 
+        if(err){
+            console.log("ERROR: " + err);
+            return res.json(new UserWithErrorMessage(null, "something went wrong"));
+        }
+        if(count>0){
+            console.log("user exists!");
+            return res.json(new UserWithErrorMessage(null, "That username is taken"));
+        }
+        console.log("saving user");
+        newUser.save()
+        .then(() => {
+            console.log("return saved user");
+            newUser.password = "";
+        })
+        .catch(err => {
+            console.log('ERROR: ' + err);
+            return res.json(new UserWithErrorMessage(null, "something went wrong"));
+        });
+        return res.json(new UserWithErrorMessage(newUser, ""));
+    }); 
 });
 
 // get user by id
@@ -115,5 +134,35 @@ usersRouter.route('/update/username/:username').get((req, res) => {
     });
 });
 
+
+
+usersRouter.post("/contact", (req, res) => {
+    console.log("sending mail");
+    var transporter = nodemailer.createTransport( 
+        `smtps://mappinteam%40gmail.com:MappinProject@smtp.gmail.com` 
+    ); 
+
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const name = firstName +" "+lastName;
+    const email = req.body.email;
+    const message = req.body.message; 
+   
+    var mailOptions = { 
+        from : email, 
+        to : 'mappinteam@gmail.com', 
+        subject : 'Contact Us Form', 
+        text: "name: " + name + "\nemail: "+ email + "\n\n"+ message
+    }; 
+   
+    transporter.sendMail( mailOptions, (error, info) => { 
+        if (error) { 
+          console.log(`error: ${error}`); 
+          res.json({ status: "failed" });
+        } 
+        console.log(`Message Sent ${info.response}`); 
+        res.json({ status: "sent" });
+    });
+});
 
 export {usersRouter};

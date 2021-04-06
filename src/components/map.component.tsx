@@ -120,14 +120,8 @@ export default class Map extends React.Component<{}, State> {
     
     public render() {
         const { viewport } = this.state;
-        if (!localStorage.user) {
-            return (
-                <Redirect push to='/register'/>
-            );
-        }
-        else {
-            return (
-                <ReactMapGL
+         return (
+             <ReactMapGL
                     {...viewport}
                     className="map-size"
                     mapboxApiAccessToken={MAPBOX_TOKEN}
@@ -142,4 +136,3 @@ export default class Map extends React.Component<{}, State> {
             );
         }
     }
-}
