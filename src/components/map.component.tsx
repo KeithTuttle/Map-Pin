@@ -51,7 +51,7 @@ export default class Map extends React.Component<{}, State> {
     public componentDidMount() {
         window.addEventListener('resize', this.resize);
         this.resize();
-        axios.get('http://localhost:5000/users/' + localStorage.user)
+        axios.get('http://localhost:5000/users/username/' + localStorage.user)
             .then(response => {
                 console.log(response.data)
                 this.setState({
@@ -104,11 +104,14 @@ export default class Map extends React.Component<{}, State> {
             'longitude': event.lngLat[0],
             'description': 'temporary'
         })
-        const update = {
+        axios.post('http://localhost:5000/users/update/username/' + localStorage.user, 
+            {
+                username: localStorage.user,
+                pins: pins
+            })
+        this.setState({
             pins: pins
-        }
-        axios.post('http://localhost:5000/users/update/' + localStorage.user, update)
-        this.setState(update)
+            })
         this.convertMarkers();
     }
 
