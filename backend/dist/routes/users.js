@@ -113,6 +113,20 @@ usersRouter.route('/update/:id').post((req, res) => {
         }
     });
 });
+usersRouter.route('/update/username/:username').post((req, res) => {
+    var options = {
+        upsert: false,
+        new: true
+    };
+    User_1.User.findOneAndUpdate({ username: req.body.username }, req.body, options, function (err, user) {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.json(user);
+        }
+    });
+});
 usersRouter.route('/update/username/:username').get((req, res) => {
     console.log("getting users");
     User_1.User.updateOne({ username: req.params.username }, { $set: { "username": req.body.username } }, { upsert: true, new: true }, (err) => {

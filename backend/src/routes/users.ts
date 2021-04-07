@@ -101,13 +101,31 @@ usersRouter.route('/:id').delete((req, res) => {
     .catch(err => res.status(400).json('ERROR: ' + err));
 });
 
-//update a user
+//update a user by id
 usersRouter.route('/update/:id').post((req, res) => {
     var options: QueryOptions ={
         upsert: false,
         new: true
     };
     User.findByIdAndUpdate(req.params.id, req.body, options, function(err, user) {
+        if(err){
+            res.send(err)
+        }
+        else {
+            // get back the new user
+            // to get back the old record, remove the 'new' from options or set to false
+            res.json(user);
+        }
+    });
+});
+
+//update a user by username
+usersRouter.route('/update/username/:username').post((req, res) => {
+    var options: QueryOptions ={
+        upsert: false,
+        new: true
+    };
+    User.findOneAndUpdate({username: req.body.username}, req.body, options, function(err, user) {
         if(err){
             res.send(err)
         }
