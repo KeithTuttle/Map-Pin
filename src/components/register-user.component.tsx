@@ -4,6 +4,7 @@ import axios from 'axios';
 import { UserWithErrorMessage } from '../viewModels/UserWithErrorMessage';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import * as UserActions from '../store/actions/userActions';
 
 // defines the type of the props, if any. could also pass in {}
 interface IProps {
@@ -32,13 +33,6 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
             redirect: false,
             usernameError: ''
         }
-    }
-
-    handleRedirect() {
-        this.setState({
-            redirect: true
-        })
-        window.location.reload();
     }
 
     onChangeUsername(event: React.FormEvent<HTMLInputElement>) {
@@ -81,8 +75,11 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
                     return MySwal.fire(<p>Registration Failed</p>,<span>unexpected error occured</span>, "error");
                 }
                 else{
+                    UserActions.setUser(result.data.user);
                     localStorage.setItem('user', result.data.user.username);
-                    this.handleRedirect();
+                    this.setState({
+                        redirect: true
+                    });
                 }
             })
             .catch(err => console.log(err));
@@ -113,7 +110,7 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
                         </div>
                     }
                     <label>Password: </label>
-                    <input  type="text"
+                    <input  type="password"
                         style={{width: '90%'}}
                         required
                         className="form-control"
