@@ -110,7 +110,7 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
                         </div>
                     }
                     <label>Password: </label>
-                    <input  type="text"
+                    <input  type="password"
                         style={{width: '90%'}}
                         required
                         className="form-control"

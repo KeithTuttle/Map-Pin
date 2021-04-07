@@ -118,7 +118,7 @@ class LoginUser extends React.Component<IProps, LoginState> {
                         </div>
                     }
                     <label>Password: </label>
-                    <input  type="text"
+                    <input  type="password"
                         style={{width: '90%'}}
                         required
                         className="form-control"
