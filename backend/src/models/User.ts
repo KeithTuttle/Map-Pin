@@ -1,8 +1,19 @@
-import mongoose from 'mongoose';
+import { model, Schema, Model, Document } from 'mongoose';
 
-const Schema = mongoose.Schema;
+interface Pin{
+    name: string;
+    lat: number;
+    long:number;
+    description: string;
+}
 
-const userSchema = new Schema({
+interface IUser extends Document {
+    username: string;
+    password: string;
+    pins: Array<Pin>;
+}
+
+const userSchema: Schema = new Schema({
 
     username: {
         type: String,
@@ -43,6 +54,6 @@ const userSchema = new Schema({
     timestamps: true,
 });
 
-const User = mongoose.model('User', userSchema);
+const User: Model<IUser> = model('User', userSchema);
 
-export {User};
+export {User, IUser};

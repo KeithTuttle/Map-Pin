@@ -1,6 +1,10 @@
-#mapbox .map-size.mapboxgl-map {
+#mapbox .map-size.mapboxgl-map,
+div.overlays {
   height: 80% !important;
   width: 90% !important;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 10px;
 }
 
 .imageHover {

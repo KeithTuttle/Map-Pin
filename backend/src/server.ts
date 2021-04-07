@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { usersRouter } from './routes/users';
 import dotenv from 'dotenv';
+import nodemailer from "nodemailer";
 
 const main = async () => {
     //env variables
