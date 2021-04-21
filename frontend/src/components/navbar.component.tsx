@@ -23,10 +23,10 @@ export default class NavBar extends React.Component<IProps, NavState> {
     }
 
     clearUsername(){
-        // localStorage.removeItem("user");
-        // this.setState({
-        //     username: ""
-        // });
+        localStorage.removeItem("user");
+        this.setState({
+            username: ""
+        });
         var user = new User();
         user.username = '';
         UserActions.setUser(user);

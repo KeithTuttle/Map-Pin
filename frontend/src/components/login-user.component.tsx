@@ -40,13 +40,6 @@ class LoginUser extends React.Component<IProps, LoginState> {
         }
     }
 
-    handleRedirect() {
-        this.setState({
-            redirect: true
-        })
-        window.location.reload();
-    }
-
     onChangeUsername(event: React.FormEvent<HTMLInputElement>) {
         const target = event.target as HTMLInputElement;
         this.setState({
@@ -87,7 +80,6 @@ class LoginUser extends React.Component<IProps, LoginState> {
                 }
                 else{
                     UserActions.setUser(result.data.user);
-                    //TODO: Remove local storage so everything calls the store
                     localStorage.setItem('user', result.data.user?.username);
                     this.setState({
                         redirect: true
