@@ -20,7 +20,7 @@ export default class Home extends React.Component<IProps, HomeState> {
     constructor(props: IProps) {
         super(props);
         this.state = {
-            username: userStore.getUser()?.username,
+            username: userStore.getUser()?.username
         }
     }
 

@@ -7,6 +7,10 @@ div.overlays {
   margin-top: 10px;
 }
 
+.btn-danger:focus {
+  background-color: #ff3333;
+}
+
 .imageHover {
   cursor: pointer;
 }
