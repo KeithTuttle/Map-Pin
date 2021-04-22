@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { usersRouter } from './routes/users';
 import dotenv from 'dotenv';
+import path from 'path';
 
 const main = async () => {
     //env variables
@@ -17,7 +18,7 @@ const main = async () => {
     app.use(express.json());
 
     const uri = process.env.ATLAS_URI+''; 
-    mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true }
+    mongoose.connect(process.env.MONGODB_URI || uri, { useNewUrlParser: true, useCreateIndex: true }
     );
     const connection = mongoose.connection;
     connection.once('open', () => {
@@ -26,6 +27,14 @@ const main = async () => {
 
     // routers
     app.use('/users', usersRouter);
+
+    if (process.env.NODE_ENV === 'production'){
+      app.use(express.static('frontend/build'));
+
+      app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+      })
+    }
 
     //starts server and listens
     app.listen(port, () => {
