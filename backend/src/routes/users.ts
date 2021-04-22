@@ -4,8 +4,6 @@ import { User, IUser } from '../models/User';
 import argon2 from 'argon2';
 import { UserWithErrorMessage } from '../models/UserWithErrorMesage'
 import nodemailer from "nodemailer";
-import Mail from 'nodemailer/lib/mailer';
-
 
 const usersRouter = express.Router();
 

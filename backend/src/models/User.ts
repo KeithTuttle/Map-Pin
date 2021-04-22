@@ -1,4 +1,4 @@
-import { model, Schema, Model, Document } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 
 interface Pin{
     name: string;
@@ -54,6 +54,6 @@ const userSchema: Schema = new Schema({
     timestamps: true,
 });
 
-const User: Model<IUser> = model('User', userSchema);
+const User = model<IUser>('User', userSchema);
 
 export {User, IUser};
