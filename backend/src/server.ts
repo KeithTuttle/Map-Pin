@@ -29,11 +29,15 @@ const main = async () => {
     app.use('/users', usersRouter);
 
     if (process.env.NODE_ENV === 'production'){
-      app.use(express.static('frontend/build'));
+      app.use(express.static('public'));
 
       app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+        res.sendFile(path.join(__dirname + '/public/index.html'));
       })
+    } else {
+      app.get("/", (req, res) => {
+        res.send("api started");
+      });
     }
 
     //starts server and listens

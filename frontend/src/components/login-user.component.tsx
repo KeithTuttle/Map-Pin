@@ -55,6 +55,8 @@ class LoginUser extends React.Component<IProps, LoginState> {
     }
 
     onSubmit(event: React.FormEvent){
+        var path="";
+        if(process.env.NODE_ENV === "development"){ path = "http://localhost:5000"}
         event.preventDefault();
         this.setState({wrongPassword: "", wrongUsername: ""});
 
@@ -63,7 +65,7 @@ class LoginUser extends React.Component<IProps, LoginState> {
             password: this.state.password 
         }
 
-        axios.post<UserWithErrorMessage>('http://localhost:5000/users/login', user)
+        axios.post<UserWithErrorMessage>(path+'/users/login', user)
             .then(result => {
                 console.log(result);
                 if(result.data.error !== ""){
