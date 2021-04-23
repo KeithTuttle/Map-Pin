@@ -73,7 +73,6 @@ export default class Home extends React.Component<IProps, HomeState> {
             }
             return (
                 <div id="mapbox" className="text-center">
-                        <EditPin></EditPin>
                         <Map></Map>
                 </div>
             );
