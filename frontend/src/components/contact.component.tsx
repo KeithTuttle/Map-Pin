@@ -66,12 +66,14 @@ class ContactUs extends React.Component<IProps, ContactState> {
     }
 
     onSubmit(event: React.FormEvent){
+        var path="";
+        if(process.env.NODE_ENV === "development"){ path = "http://localhost:5000"}
         event.preventDefault();
         const MySwal = withReactContent(Swal)
         this.setState({ status: "Sending" });  
         axios({
           method: "POST",
-          url: "http://localhost:5000/users/contact",
+          url: path+"/users/contact",
           data: this.state,
         }).then((response) => {
           if (response.data.status === "sent") {

@@ -34,6 +34,10 @@ const main = async () => {
       app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname + '/public/index.html'));
       })
+    } else {
+      app.get("/", (req, res) => {
+        res.send("api started");
+      });
     }
 
     //starts server and listens

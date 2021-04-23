@@ -3,6 +3,11 @@ import * as React from 'react';
 import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import ReactMapGL, { NavigationControl, Marker, MapEvent } from 'react-map-gl';
 import Pin from '../viewModels/Pin';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import mapboxgl from 'mapbox-gl';
+
+// eslint-disable-next-line import/no-webpack-loader-syntax
+//mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 const popover = (latitude: number, longitude: number) => (
     <Popover id="popover-basic">
@@ -70,9 +75,11 @@ export default class Map extends React.Component<IProps, MapState> {
     }
 
     public componentDidMount() {
+        var path="";
+        if(process.env.NODE_ENV === "development"){ path = "http://localhost:5000"}
         window.addEventListener('resize', this.resize);
         this.resize();
-        axios.get('http://localhost:5000/users/username/' + localStorage.getItem("user"))
+        axios.get(path+'/users/username/' + localStorage.getItem("user"))
             .then(response => {
                 console.log(response.data)
                 this.setState({
@@ -118,6 +125,8 @@ export default class Map extends React.Component<IProps, MapState> {
     }
 
     public addPin = (event: MapEvent) => {
+        var path="";
+        if(process.env.NODE_ENV === "development"){ path = "http://localhost:5000"}
         const pins = this.state.pins.slice();
         var newPin: Pin = {
             name: 'temporary',
@@ -126,7 +135,7 @@ export default class Map extends React.Component<IProps, MapState> {
             description: 'temporary'
         }
         pins.push(newPin)
-        axios.post('http://localhost:5000/users/update/username/' + localStorage.getItem("user"), 
+        axios.post(path+'/users/update/username/' + localStorage.getItem("user"), 
             {
                 username: localStorage.getItem("user"),
                 pins: pins

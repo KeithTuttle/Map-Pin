@@ -45,8 +45,10 @@ export default class Home extends React.Component<IProps, HomeState> {
     }
 
     getUserFromLocalStorage(username: string){
+        var path="";
+        if(process.env.NODE_ENV === "development"){ path = "http://localhost:5000"}
         console.log("getting user from local storage")
-        axios.get<User>(`http://localhost:5000/users/username/${username}`)
+        axios.get<User>(`${path}/users/username/${username}`)
             .then(result => {
                 console.log("result from getting user from local storage: " + result.data);
                 UserActions.setUser(result.data);

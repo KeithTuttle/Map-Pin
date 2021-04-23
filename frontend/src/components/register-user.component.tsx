@@ -50,6 +50,8 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
     }
 
     onSubmit(event: React.FormEvent){
+        var path="";
+        if(process.env.NODE_ENV === "development"){ path = "http://localhost:5000"}
         event.preventDefault();
         this.setState({
             usernameError: ''
@@ -60,7 +62,7 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
             password: this.state.password 
         }
         try{
-            axios.post<UserWithErrorMessage>('http://localhost:5000/users/add', user)
+            axios.post<UserWithErrorMessage>(path+'/users/add', user)
             .then(result => {
                 console.log(result.data)
                 if(result.data.error !== ""){

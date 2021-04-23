@@ -32,9 +32,14 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     app.use('/users', users_1.usersRouter);
     if (process.env.NODE_ENV === 'production') {
-        app.use(express_1.default.static('frontend/build'));
+        app.use(express_1.default.static('public'));
         app.get('*', (req, res) => {
-            res.sendFile(path_1.default.resolve(__dirname, 'frontend', 'build', 'index.html'));
+            res.sendFile(path_1.default.join(__dirname + '/public/index.html'));
+        });
+    }
+    else {
+        app.get("/", (req, res) => {
+            res.send("api started");
         });
     }
     app.listen(port, () => {
