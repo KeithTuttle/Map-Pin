@@ -68,6 +68,9 @@ export default class NavBar extends React.Component<IProps, NavState> {
                 {this.state.username != '' &&
                     <ul className="navbar-nav ml-auto">
                         <li className="navbar-item">
+                            <NavLink style={{color: 'white'}} to="/" className="nav-link">Map </NavLink>
+                        </li>
+                        <li className="navbar-item">
                             <NavLink style={{color: 'white'}} to="/contact" className="nav-link">Contact Us </NavLink>
                         </li>
                         <li className="navbar-item">

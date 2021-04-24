@@ -21,13 +21,13 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const usersRouter = express_1.default.Router();
 exports.usersRouter = usersRouter;
 usersRouter.route('/').get((req, res) => {
-    console.log("getting users 1");
+    console.log("getting all users");
     User_1.User.find()
         .then(users => res.json(users))
         .catch(err => res.status(400).json('ERROR: ' + err));
 });
 usersRouter.route('/add').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("adding user");
+    console.log("adding a user");
     const username = req.body.username;
     const password = yield argon2_1.default.hash(req.body.password);
     const newUser = new User_1.User({ username, password });
@@ -59,7 +59,7 @@ usersRouter.route('/:id').get((req, res) => {
         .catch(err => res.status(400).json('ERROR: ' + err));
 });
 usersRouter.route('/username/:username').get((req, res) => {
-    console.log("getting users");
+    console.log("getting user by username");
     User_1.User.findOne({ username: req.params.username })
         .then(user => res.json(user))
         .catch(err => res.status(400).json('ERROR: ' + err));
@@ -113,6 +113,37 @@ usersRouter.route('/update/:id').post((req, res) => {
         }
     });
 });
+usersRouter.route('/share/username/:username').post((req, res) => {
+    console.log("sharing pin");
+    User_1.User.findOne({ username: req.body.username }, function (err, user) {
+        if (err) {
+            console.log(err);
+            var message = "An error occured";
+            var response = new UserWithErrorMesage_1.UserWithErrorMessage(null, message);
+            return res.json(response);
+        }
+        if (!user) {
+            var message = "Username does not exist";
+            var response = new UserWithErrorMesage_1.UserWithErrorMessage(null, message);
+            return res.json(response);
+        }
+        user.pins = user.pins.concat(req.body.pins);
+        console.log(user.pins);
+        User_1.User.updateOne({ username: user.username }, { $set: { "pins": user.pins } }, { upsert: true, new: true }, (err) => {
+            if (err) {
+                var response = new UserWithErrorMesage_1.UserWithErrorMessage(null, err);
+                return res.json(response);
+            }
+            else {
+                console.log("SHARED");
+                var response = new UserWithErrorMesage_1.UserWithErrorMessage(user, "");
+                return res.json(response);
+            }
+        });
+        var response = new UserWithErrorMesage_1.UserWithErrorMessage(null, "Error occured!");
+        return res.json(response);
+    });
+});
 usersRouter.route('/update/username/:username').post((req, res) => {
     var options = {
         upsert: false,
@@ -128,7 +159,7 @@ usersRouter.route('/update/username/:username').post((req, res) => {
     });
 });
 usersRouter.route('/update/username/:username').get((req, res) => {
-    console.log("getting users");
+    console.log("update user by username");
     User_1.User.updateOne({ username: req.params.username }, { $set: { "username": req.body.username } }, { upsert: true, new: true }, (err) => {
         if (err) {
             res.send(err);
