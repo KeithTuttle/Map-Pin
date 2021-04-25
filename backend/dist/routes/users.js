@@ -123,14 +123,15 @@ usersRouter.route('/share/username/:username').post((req, res) => {
             return res.json(response);
         }
         if (!user) {
+            console.log("username doesn't exist in sharePin");
             var message = "Username does not exist";
             var response = new UserWithErrorMesage_1.UserWithErrorMessage(null, message);
             return res.json(response);
         }
         user.pins = user.pins.concat(req.body.pins);
-        console.log(user.pins);
         User_1.User.updateOne({ username: user.username }, { $set: { "pins": user.pins } }, { upsert: true, new: true }, (err) => {
             if (err) {
+                console.log("error occured in sharer updateOne");
                 var response = new UserWithErrorMesage_1.UserWithErrorMessage(null, err);
                 return res.json(response);
             }
@@ -140,8 +141,6 @@ usersRouter.route('/share/username/:username').post((req, res) => {
                 return res.json(response);
             }
         });
-        var response = new UserWithErrorMesage_1.UserWithErrorMessage(null, "Error occured!");
-        return res.json(response);
     });
 });
 usersRouter.route('/update/username/:username').post((req, res) => {
