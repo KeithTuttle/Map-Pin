@@ -28,17 +28,14 @@ export default class Home extends React.Component<IProps, HomeState> {
         userStore.on("change", () => {
             let name = userStore.getUser()?.username;
             if (name == undefined) {
-                console.log("home name is undefined - in if")
                 this.setState({
                     username: ''
                 });
             }
             else{
-                console.log("home set the state");
                 this.setState({
                     username: name
                 });
-                console.log("home state: " + this.state.username);
             }
             
         });
@@ -47,12 +44,9 @@ export default class Home extends React.Component<IProps, HomeState> {
     getUserFromLocalStorage(username: string){
         var path="";
         if(process.env.NODE_ENV === "development"){ path = "http://localhost:5000"}
-        console.log("getting user from local storage")
         axios.get<User>(`${path}/users/username/${username}`)
             .then(result => {
-                console.log("result from getting user from local storage: " + result.data);
                 UserActions.setUser(result.data);
-                console.log(userStore.getUser);
             })
         .catch(err => console.log(err));
     }

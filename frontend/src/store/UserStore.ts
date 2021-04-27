@@ -9,14 +9,12 @@ class UserStore extends EventEmitter {
      }
 
      setUser(user: User | null){
-         console.log("setting user to: " + user?.username);
         this.user = user;
 
         this.emit("change");
      }
 
      getUser(){
-         console.log("getting the user");
          return this.user;
      }
 

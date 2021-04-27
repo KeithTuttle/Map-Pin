@@ -64,7 +64,6 @@ class RegisterUser extends React.Component<IProps, RegisterState> {
         try{
             axios.post<UserWithErrorMessage>(path+'/users/add', user)
             .then(result => {
-                console.log(result.data)
                 if(result.data.error !== ""){
                     if(result.data.error.includes("username is taken")){
                         this.setState({usernameError: result.data.error});

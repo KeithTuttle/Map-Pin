@@ -67,7 +67,6 @@ class LoginUser extends React.Component<IProps, LoginState> {
 
         axios.post<UserWithErrorMessage>(path+'/users/login', user)
             .then(result => {
-                console.log(result);
                 if(result.data.error !== ""){
                     if(result.data.error.includes("Username")){
                         this.setState({wrongUsername: result.data.error});

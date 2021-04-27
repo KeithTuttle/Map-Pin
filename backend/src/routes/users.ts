@@ -9,7 +9,7 @@ const usersRouter = express.Router();
 
 // get all users
 usersRouter.route('/').get((req, res) => {
-    console.log("getting users 1");
+    console.log("getting all users");
     User.find()
         .then(users => res.json(users))
         .catch(err => res.status(400).json('ERROR: ' + err));
@@ -18,7 +18,7 @@ usersRouter.route('/').get((req, res) => {
 
 // add user
 usersRouter.route('/add').post(async(req, res) => {
-    console.log("adding user");
+    console.log("adding a user");
     const username = req.body.username;
     const password = await argon2.hash(req.body.password);
     const newUser = new User({username, password});
@@ -55,7 +55,7 @@ usersRouter.route('/:id').get((req, res) => {
 
 // get user by username
 usersRouter.route('/username/:username').get((req, res) => {
-    console.log("getting users");
+    console.log("getting user by username");
     User.findOne({username: req.params.username})
     .then(user => res.json(user))
     .catch(err => res.status(400).json('ERROR: ' + err));
@@ -114,10 +114,43 @@ usersRouter.route('/update/:id').post((req, res) => {
             // to get back the old record, remove the 'new' from options or set to false
             res.json(user);
         }
+    }); 
+});
+
+//Share Pins
+// TODO: refactor so all code paths return. left as is because I need to get the user, alter it by adding the new pins, and inserting
+usersRouter.route('/share/username/:username').post((req, res) => {
+    console.log("sharing pin");
+    User.findOne({username: req.body.username}, function(err: Error, user: IUser){
+        if(err) {
+            console.log(err);
+            var message = "An error occured";
+            var response = new UserWithErrorMessage(null, message);
+            return res.json(response);
+        }
+        if(!user) {
+            console.log("username doesn't exist in sharePin");
+            var message = "Username does not exist";
+            var response = new UserWithErrorMessage(null, message);
+            return res.json(response);
+        }
+        user.pins = user.pins.concat(req.body.pins);
+        User.updateOne({username: user.username}, {$set: {"pins": user.pins}}, { upsert: true, new: true }, (err) => {
+            if(err){
+                console.log("error occured in sharer updateOne");
+                var response = new UserWithErrorMessage(null, err);
+                return res.json(response);
+            } 
+            else{
+                console.log("SHARED")
+                var response = new UserWithErrorMessage(user, "");
+                return res.json(response);
+            }
+        });
     });
 });
 
-//update a user by username
+//update user by username
 usersRouter.route('/update/username/:username').post((req, res) => {
     var options: QueryOptions ={
         upsert: false,
@@ -137,7 +170,7 @@ usersRouter.route('/update/username/:username').post((req, res) => {
 
 // GET request
 usersRouter.route('/update/username/:username').get((req, res) => {
-    console.log("getting users");
+    console.log("update user by username");
     User.updateOne({username: req.params.username}, {$set: {"username": req.body.username}}, { upsert: true, new: true }, (err) => {
         if(err){
             res.send(err);
@@ -149,8 +182,6 @@ usersRouter.route('/update/username/:username').get((req, res) => {
         }
     });
 });
-
-
 
 usersRouter.post("/contact", (req, res) => {
     console.log("sending mail");
