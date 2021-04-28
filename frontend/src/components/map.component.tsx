@@ -233,12 +233,6 @@ export default class Map extends React.Component<IProps, MapState> {
         this.convertMarkers();
     }
 
-    public deleteMarker = (arr: number[]) => {
-        this.setState( prevState => ({
-            markers: prevState.markers.filter(marker => marker.props.children.props.longitude !== arr[0] && marker.props.children.props.latitude !== arr[1])
-        }))
-    }
-
     updatePin(){
         var path="";
         if(process.env.NODE_ENV === "development"){ path = "http://localhost:5000"}
@@ -379,6 +373,11 @@ export default class Map extends React.Component<IProps, MapState> {
 
     public render() {
         const { viewport } = this.state;
+        const style = {
+            display: 'block',
+            'margin-left': 'auto',
+            'margin-right': 'auto'
+        }
          return (
              <span>
                  <div style={{width: "95%"}}>
@@ -388,6 +387,9 @@ export default class Map extends React.Component<IProps, MapState> {
                  </div>
                 <ReactMapGL
                         {...viewport}
+                        height='80vh'
+                        width='90vw'
+                        style={ style }
                         className="map-size"
                         mapboxApiAccessToken={MAPBOX_TOKEN}
                         onViewportChange={(v: Viewport) => this.updateViewport(v)}
