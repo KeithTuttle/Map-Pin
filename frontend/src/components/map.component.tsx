@@ -6,7 +6,6 @@ import Pin from '../viewModels/Pin';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import mapboxgl from 'mapbox-gl';
 import { UserWithErrorMessage } from '../viewModels/UserWithErrorMessage';
 
 interface IProps {

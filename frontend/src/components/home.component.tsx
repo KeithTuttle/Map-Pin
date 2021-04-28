@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Map from './map.component';
-import EditPin from './edit-pin.component';
 import { Redirect } from 'react-router-dom';
 import userStore from '../store/UserStore';
 import * as UserActions from '../store/actions/userActions';
